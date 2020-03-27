@@ -23,6 +23,8 @@ public class ClusterAlgorithm {
 	public List<Cluster> clusters;
 	
 	public ClusterAlgorithm(ClusterPairMap map, List<Cluster> clusters) {
+		
+		System.out.println("cluster before:"+clusters.size());
 		this.map = map;
 		this.clusters = clusters;
 	}
@@ -45,6 +47,7 @@ public class ClusterAlgorithm {
 			buildNewPair(lCluster, rCluster, newCluster);
 			clusters.add(newCluster);
 		}
+		
 		return clusters;
 	}
 	

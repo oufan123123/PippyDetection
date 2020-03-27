@@ -3,13 +3,15 @@ package com.cn;
 import java.util.List;
 import java.util.Map;
 import com.am.*;
+import com.primary.*;
 
 public class Test {
+	private static int size;
 	
 	public static void main(String[] args) throws InterruptedException {
 		
 		// 第一步，输入apk路径，找到（类和包）所有的节点，构成一棵棵树
-		List<Tree<PackageOrClass>> list = Tree.buildTree("D:\\apktool\\AdAway.apk");
+		List<Tree<PackageOrClass>> list = Tree.buildTree("D:\\apktool\\Aegis.apk");
 		
 		/*
 		for (int i=0;i<list.size();i++) {
@@ -33,26 +35,36 @@ public class Test {
 		// 第四步，启动线程，分析每个smali文件
 		graph.analyseAllSmaliFile(list, classList, graph);
 		
+		graph.searchGraphAndChild();
 		//long end = System.currentTimeMillis();
 		//System.out.println(end - begin);
 		
 		// 第五步，遍历树，将父子和兄弟节点的关系找到
 		graph.handleGraphRelation();
 		
+		graph.searchGraphAndChild();
 		// 第六步，将有向图转为无向图，注意第五步得到的是类相互之间调用的值，所以a->b的值保存在a中， b->a的值保存在b中，聚类所有的图上的点为簇，阀值为5
 		List<Cluster> clusters = graph.getClustersFromMap();
 		ClusterPairMap clusterMap = graph.getClusterPairMap();
+		
+		
 		// 第七步，进行聚类操作
 		ClusterAlgorithm ca = new ClusterAlgorithm(clusterMap, clusters);
 		List<Cluster> result = ca.clustering();
 		
-		if(result == null || result.size() == 0) {
+		size = 0;
+		if(clusters == null || clusters.size() == 0) {
 			System.out.println("null");
 		}
-		for (Cluster cluster:result) {
-			System.out.println("tree");
+		for (Cluster cluster:clusters) {
+			System.out.println("module"+size++);
 			dfs(cluster);
 		}
+		
+		// 第八步 分析manifest文件，得到主模块的簇
+		PrimarySelection ps = new PrimarySelection(result);
+		Cluster mainModule = ps.getMainModule("D:\\DecodeApk\\Aegis\\AndroidManifest.xml");
+		System.out.println(mainModule.getPackageName());
 		
 		
 		

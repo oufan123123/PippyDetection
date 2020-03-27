@@ -82,6 +82,7 @@ public class ClusterPairMap {
 	public boolean isInMap(Cluster c1, Cluster c2) {
 		String stringOne = getHashCode(c1, c2);
 		String stringTwo = getHashCode(c2, c1);
+		boolean isDelete = false;
 		if (stringOne != null && map.get(stringOne) != null) {
 			map.remove(stringOne);
 			clusterPairList.remove(stringOne);

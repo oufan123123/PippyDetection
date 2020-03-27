@@ -84,6 +84,8 @@ public class Graph<T> {
 	}
 	
 	
+	
+	
 	/********************************对图的基本操作***************************************/
 	
 	/**
@@ -95,6 +97,69 @@ public class Graph<T> {
 	 */
 	public GraphNode<PackageOrClass> getGraphNode(String name) {
 		return packageMap.get(name);
+	}
+	
+	
+	/**
+	 * 
+	 * 遍历图
+	 * 
+	 */
+	public void searchGraph() {
+		if (packageMap == null || packageMap.size() == 0) {
+			return;
+		}
+		
+		for (Map.Entry<String, GraphNode<PackageOrClass>> entry:packageMap.entrySet()) {
+			System.out.println(entry.getKey());
+		}
+		System.out.println(packageMap.size());
+	}
+	
+	/**
+	 * 
+	 * 遍历图和节点的子节点
+	 * @return
+	 */
+	
+	public void searchGraphAndChild() {
+		Map<String, ClusterPair> pairMap = new HashMap<>();
+		// 遍历map一遍
+		
+		
+		
+		
+		
+		
+		
+		// 测试用部分
+		int all = 0;
+		int type1 = 0;
+		int type2 = 0;
+		int type3 = 0;
+		
+		
+		
+		
+		int siz = 0;	
+		System.out.println("searchOne:");
+		for (Map.Entry<String, GraphNode<PackageOrClass>> callEntry:packageMap.entrySet()) {
+			Map<GraphNode<PackageOrClass>, Integer> calledMap = callEntry.getValue().getMap();
+			//System.out.println(callEntry.getKey()+"call:");
+			// 遍历被调用的包一遍
+			
+			for (Map.Entry<GraphNode<PackageOrClass>, Integer> calledEntry:calledMap.entrySet()) {
+				
+				//System.out.println(siz+":" + calledEntry.getKey().getData().getName());
+				siz++;
+				if (calledEntry.getKey().getData().getName().equals(callEntry.getKey())) {
+					System.out.println("dd");
+				}
+				
+				
+			}
+			
+		}
 	}
 	
 	
@@ -280,7 +345,9 @@ public class Graph<T> {
 		if (fatherNode != null) {
 			//System.out.println(fatherString);
 			List<GraphNode<PackageOrClass>> list = fatherNode.getChildList();
-			list.add(graphNode);
+			if (!list.contains(graphNode)) {
+				list.add(graphNode);
+			}
 			fatherNode.setChildList(list);
 		}
 		
@@ -432,23 +499,14 @@ public class Graph<T> {
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		int siz = 0;	
 		for (Map.Entry<String, GraphNode<PackageOrClass>> callEntry:packageMap.entrySet()) {
 			Map<GraphNode<PackageOrClass>, Integer> calledMap = callEntry.getValue().getMap();
 			//System.out.println(callEntry.getKey()+"call:");
 			// 遍历被调用的包一遍
-			int siz = 0;
+			
 			for (Map.Entry<GraphNode<PackageOrClass>, Integer> calledEntry:calledMap.entrySet()) {
+				
 				//System.out.println(siz+":" + calledEntry.getKey().getData().getName());
 				siz++;
 				// 创建一个新的clusterpair
@@ -463,7 +521,7 @@ public class Graph<T> {
 					if (clusterPairInMap.getDistance() +calledEntry.getValue() < 5) {
 						//System.out.println("delete:"+clusterPairInMap.getDistance() +calledEntry.getValue());
 						pairMap.remove(saveString);
-						type1++;
+						type1 += 2;
 						continue;
 					}
 					// 第二种情况无需处理
@@ -486,14 +544,14 @@ public class Graph<T> {
 		while (iterator.hasNext()) {
 			Map.Entry<String, ClusterPair> entry = iterator.next();
 			if (entry.getValue().getDistance() < 5) {
-				type1++;
+				//type1++;
 				iterator.remove();
 			}
 		}
-		System.out.println("type1:"+type1);
-		System.out.println("type2:"+type2);
-		System.out.println("type3:"+type3);
-		System.out.println("all:"+all);
+		//System.out.println("type1:"+type1);
+		//System.out.println("type2:"+type2);
+		//System.out.println("type3:"+type3);
+		//System.out.println("siz:"+siz);
 		return new ClusterPairMap(pairMap);
 	}
 	

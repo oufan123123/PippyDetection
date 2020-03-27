@@ -1,7 +1,9 @@
 package com.cn;
 
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * 
@@ -18,12 +20,17 @@ public class GraphNode<T> {
 	
 	private T data;
 	private boolean isVisited;
+	private boolean isClustered;
 	volatile private Map<GraphNode<T>, Integer> map; // 表示包与包之间的权重联系
+	
+	volatile private List<GraphNode<T>> childList; // 表示包的父子关系，留待第二种兄弟关系处理
 	
 	public GraphNode(T data) {
 		this.data = data;
 		isVisited = false;
+		isClustered = false;
 		map = new HashMap<>();
+		childList = new ArrayList<>();
 		
 	}
 
@@ -49,6 +56,22 @@ public class GraphNode<T> {
 
 	public void setMap(Map<GraphNode<T>, Integer> map) {
 		this.map = map;
+	}
+
+	public boolean isClustered() {
+		return isClustered;
+	}
+
+	public void setClustered(boolean isClustered) {
+		this.isClustered = isClustered;
+	}
+
+	public List<GraphNode<T>> getChildList() {
+		return childList;
+	}
+
+	public void setChildList(List<GraphNode<T>> childList) {
+		this.childList = childList;
 	}
 	
 	

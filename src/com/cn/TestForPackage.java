@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,12 +35,13 @@ public class TestForPackage {
 	public TestForPackage(PackageOrClass fatherPackage, List<String> classList, Map<String, TreeNode<PackageOrClass>> mapToClass) {
 		this.fatherPackage  = fatherPackage;
 		this.classList = classList;
+		mapEdgeWeight = new HashMap<>();
 		this.mapToClass = mapToClass;
 		
 		File file = new File(fatherPackage.getPath());
 		File[] files = file.listFiles();
 		for (int i=0;i<files.length;i++) {
-			System.out.println(files[i].getAbsolutePath());
+			//System.out.println(files[i].getAbsolutePath());
 			analyseFile(files[i].getAbsolutePath(), mapToClass.get(files[i].getAbsolutePath()).getData());
 			
 		}
@@ -254,6 +256,9 @@ public class TestForPackage {
 		if (invokePackage.equals(fatherPackage.getName())) {
 			return;
 		}
+		System.out.println("class:"+childClass.getName());
+		System.out.println("value:"+addedNum);
+		System.out.println("invoke:"+invokeClass);
 		if (mapEdgeWeight.get(invokePackage) != null) {
 			int x = mapEdgeWeight.get(invokePackage);
 			mapEdgeWeight.put(invokePackage, x + addedNum);

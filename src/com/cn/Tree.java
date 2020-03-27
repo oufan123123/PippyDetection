@@ -3,8 +3,10 @@ package com.cn;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 import org.apache.commons.lang3.StringUtils;
@@ -159,6 +161,48 @@ public class Tree<T> {
 	}
 	
 /*******************************映射路径到类的map*******************************************/
+	
+	/**
+	 * 
+	 * 找到路径映射到类的map
+	 * 
+	 * @param treeList
+	 * @return
+	 */
+	public static Map<String, TreeNode<PackageOrClass>> getPathToClass(List<Tree<PackageOrClass>> treeList) {
+		Map<String, TreeNode<PackageOrClass>> map = new HashMap<>();
+		if (treeList == null || treeList.size() == 0) {
+			return null;
+		}
+		for (int i=0;i<treeList.size();i++) {
+			Tree<PackageOrClass> tree = treeList.get(i);
+			getPathToClassDFS(tree.getRoot(), map);
+		}
+		return map;
+	}
+	
+	/**
+	 * 
+	 * 深搜所有的树，返回路径到类的映射关系
+	 * 
+	 * @param root
+	 * @param map
+	 */
+	public static void getPathToClassDFS(TreeNode<PackageOrClass> node, Map<String, TreeNode<PackageOrClass>> map) {
+		if (node == null) {
+			return;
+		}
+		List<TreeNode<PackageOrClass>> childList = node.getChildNodeList();
+		if (node.getData().isClass()) {
+			map.put(node.getData().getPath(), node);
+		}
+		if (childList == null && childList.size() == 0) {
+			return;
+		}
+		for (int i=0;i<childList.size();i++) {
+			getPathToClassDFS(childList.get(i), map);
+		}
+	}
 	
 /**************************apk深搜找到所有的叶子节点dd*************************************/
 	
@@ -326,6 +370,8 @@ public class Tree<T> {
 			e.printStackTrace();
 		}
 	}
+	
+	
 	
 	
 	

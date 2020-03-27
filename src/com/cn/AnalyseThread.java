@@ -29,6 +29,9 @@ public class AnalyseThread implements Runnable{
 	// 映射到对应字符串的值,最后一起清算
 	private Map<String, Integer> mapEdgeWeight;
 	
+	// 增加一个父子关系映射，因为java只能单继承，所以一个java file最多一个父亲
+	private String father;
+	
 	// 传进来一个映射,专门存储所有的叶子节点，即所在的类，证明这个类调用的另外一个类存在
 	private List<String> classList;
 	
@@ -49,14 +52,13 @@ public class AnalyseThread implements Runnable{
 	public void run() {
 		// System.out.println("thread:"+Thread.currentThread().getName());
 		String className = childClass.getName();
-		//System.out.println("className:"+className);
 		String path = childClass.getPath();
 		
 		// 开始分析文件
 		analyseFile(path);
 		
 		// ...............分析完成，开始修改图
-		graph.setInvokePackage(fatherPackage, mapEdgeWeight);
+		graph.setInvokePackage(fatherPackage, mapEdgeWeight, father);
 		
 	}
 	
@@ -264,6 +266,12 @@ public class AnalyseThread implements Runnable{
 		if (invokePackage.equals(fatherPackage.getName())) {
 			return;
 		}
+		// 增加父子关系
+		if (addedNum == 10) {
+			this.father = invokePackage;
+			//System.out.println("class:"+ childClass.getName()+"; "+"father:"+invokePackage);
+		}
+		
 		if (mapEdgeWeight.get(invokePackage) != null) {
 			int x = mapEdgeWeight.get(invokePackage);
 			mapEdgeWeight.put(invokePackage, x + addedNum);
@@ -295,7 +303,7 @@ public class AnalyseThread implements Runnable{
 		analyseFile(path);
 		
 		// ...............分析完成，开始修改图
-		graph.setInvokePackage(fatherPackage, mapEdgeWeight);
+		graph.setInvokePackage(fatherPackage, mapEdgeWeight, father);
 		
 	}
 	
